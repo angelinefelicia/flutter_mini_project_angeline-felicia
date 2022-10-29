@@ -3,21 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class ItemDetailScreen extends StatefulWidget {
-  ItemDetailScreen(
-      {Key? key,
-      required this.imageUrlData,
-      required this.titleData,
-      required this.expdateData,
-      required this.categoryData,
-      required this.reminddateData,
-      required this.notes})
-      : super(key: key);
+  ItemDetailScreen({
+    Key? key,
+    required this.imageUrlData,
+    required this.titleData,
+    required this.expdateData,
+    required this.categoryData,
+    required this.reminddateData,
+    required this.notesData,
+  }) : super(key: key);
   String imageUrlData;
   String titleData;
   DateTime expdateData;
   String categoryData;
   DateTime reminddateData;
-  String notes;
+  String notesData;
 
   @override
   State<ItemDetailScreen> createState() => _ItemDetailScreenState();
@@ -155,7 +155,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                 textAlign: TextAlign.left,
               ),
               Text(
-                widget.notes,
+                widget.notesData,
                 style: const TextStyle(
                   color: white,
                   fontSize: 18,

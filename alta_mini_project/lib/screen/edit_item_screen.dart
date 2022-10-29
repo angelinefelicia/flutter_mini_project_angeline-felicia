@@ -1,9 +1,31 @@
+import 'dart:io';
+
 import 'package:alta_mini_project/main.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker/image_picker.dart';
 
 class EditItemScreen extends StatefulWidget {
-  const EditItemScreen({Key? key}) : super(key: key);
+  EditItemScreen({
+    Key? key,
+    required this.idData,
+    required this.imageUrlData,
+    required this.titleData,
+    required this.expdateData,
+    required this.categoryData,
+    required this.reminddateData,
+    required this.notesData,
+  }) : super(key: key);
+  String idData;
+  String imageUrlData;
+  String titleData;
+  Timestamp expdateData;
+  String categoryData;
+  Timestamp reminddateData;
+  String notesData;
 
   @override
   State<EditItemScreen> createState() => _EditItemScreenState();
@@ -12,9 +34,19 @@ class EditItemScreen extends StatefulWidget {
 const List<String> cate = <String>['Food', 'Drink', 'Snack', 'Others'];
 
 class _EditItemScreenState extends State<EditItemScreen> {
+  // firebase
+  var db = FirebaseFirestore.instance;
+
   // title and notes
   final _titleController = TextEditingController();
   final _notesController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _titleController.text = widget.titleData;
+    _notesController.text = widget.notesData;
+  }
 
   @override
   void dispose() {
@@ -24,17 +56,23 @@ class _EditItemScreenState extends State<EditItemScreen> {
   }
 
   // date exp picker
-  DateTime _expDate = DateTime.now();
+  DateTime? _expDate;
   final currentDate = DateTime.now();
 
   // category
-  String categoryValue = cate.first;
+  String? categoryValue;
 
   // date reminder picker
-  DateTime _remindDate = DateTime.now();
+  DateTime? _remindDate;
+
+  // image picker
+  String imageUrl = '';
 
   @override
   Widget build(BuildContext context) {
+    // set old image
+    imageUrl = widget.imageUrlData;
+
     return AlertDialog(
       scrollable: true,
       title: titleModal(),
@@ -98,6 +136,19 @@ class _EditItemScreenState extends State<EditItemScreen> {
       children: [
         TextButton(
           onPressed: () {
+            _expDate ??= widget.expdateData.toDate();
+            categoryValue ??= widget.categoryData;
+            _remindDate ??= widget.reminddateData.toDate();
+
+            db.collection("items").doc(widget.idData).update({
+              "photo": imageUrl,
+              "title": _titleController.text,
+              "date_exp": _expDate,
+              "category": categoryValue,
+              "date_remind": _remindDate,
+              "notes": _notesController.text,
+            });
+
             Navigator.pop(context);
           },
           child: const Text(
@@ -158,7 +209,21 @@ class _EditItemScreenState extends State<EditItemScreen> {
             ],
           ),
           TextButton(
-            onPressed: () {},
+            onPressed: () async {
+              ImagePicker imagePicker = ImagePicker();
+              XFile? file =
+                  await imagePicker.pickImage(source: ImageSource.camera);
+
+              if (file == null) return;
+
+              Reference referenceImageToUpload =
+                  FirebaseStorage.instance.refFromURL(widget.imageUrlData);
+
+              try {
+                await referenceImageToUpload.putFile(File(file.path));
+                imageUrl = await referenceImageToUpload.getDownloadURL();
+              } catch (e) {}
+            },
             child: const Text(
               "Select",
               style: TextStyle(
@@ -182,6 +247,7 @@ class _EditItemScreenState extends State<EditItemScreen> {
       child: TextFormField(
         validator: (String? value) => value == '' ? "Required" : null,
         controller: _titleController,
+        inputFormatters: [LengthLimitingTextInputFormatter(20)],
         decoration: const InputDecoration(
           labelText: 'Title',
           icon: Icon(
@@ -227,7 +293,10 @@ class _EditItemScreenState extends State<EditItemScreen> {
                     ),
                   ),
                   Text(
-                    DateFormat("dd/MM/yyyy").format(_expDate),
+                    (_expDate != null)
+                        ? DateFormat("dd/MM/yyyy").format(_expDate!)
+                        : DateFormat("dd/MM/yyyy")
+                            .format(widget.expdateData.toDate()),
                     style: const TextStyle(
                       fontSize: 15,
                       color: black,
@@ -243,14 +312,14 @@ class _EditItemScreenState extends State<EditItemScreen> {
             onPressed: () async {
               final selectDate = await showDatePicker(
                   context: context,
-                  initialDate: currentDate,
+                  initialDate: widget.expdateData.toDate(),
                   firstDate: DateTime(currentDate.year - 30),
                   lastDate: DateTime(currentDate.year + 10));
               setState(() {
                 if (selectDate != null) {
                   _expDate = selectDate;
-                  _remindDate =
-                      DateTime(_expDate.year, _expDate.month - 2, _expDate.day);
+                  _remindDate = DateTime(
+                      _expDate!.year, _expDate!.month - 2, _expDate!.day);
                 }
               });
             },
@@ -297,7 +366,9 @@ class _EditItemScreenState extends State<EditItemScreen> {
                 alignment: AlignmentDirectional.centerStart,
                 isDense: true,
                 elevation: 0,
-                value: categoryValue,
+                value: (categoryValue == null)
+                    ? widget.categoryData
+                    : categoryValue,
                 items: cate.map<DropdownMenuItem<String>>(
                   (String value) {
                     return DropdownMenuItem<String>(
@@ -353,7 +424,10 @@ class _EditItemScreenState extends State<EditItemScreen> {
                     ),
                   ),
                   Text(
-                    DateFormat("dd/MM/yyyy").format(_remindDate),
+                    (_remindDate != null)
+                        ? DateFormat("dd/MM/yyyy").format(_remindDate!)
+                        : DateFormat("dd/MM/yyyy")
+                            .format(widget.reminddateData.toDate()),
                     style: const TextStyle(
                       fontSize: 15,
                       color: black,
@@ -369,7 +443,7 @@ class _EditItemScreenState extends State<EditItemScreen> {
             onPressed: () async {
               final selectDate = await showDatePicker(
                   context: context,
-                  initialDate: _remindDate,
+                  initialDate: widget.reminddateData.toDate(),
                   firstDate: DateTime(currentDate.year - 30),
                   lastDate: DateTime(currentDate.year + 10));
               setState(() {
@@ -397,10 +471,13 @@ class _EditItemScreenState extends State<EditItemScreen> {
         color: lilac,
         borderRadius: BorderRadius.all(Radius.circular(15)),
       ),
-      height: 65,
+      // height: 65,
       child: TextFormField(
         validator: (String? value) => value == '' ? "Required" : null,
         controller: _notesController,
+        keyboardType: TextInputType.multiline,
+        minLines: 1,
+        maxLines: 10,
         decoration: const InputDecoration(
           labelText: 'Notes',
           icon: Icon(

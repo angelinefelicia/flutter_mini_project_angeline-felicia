@@ -52,17 +52,17 @@ class _HomeScreenState extends State<HomeScreen> {
           }
 
           // take data
-          var _data = snapshot.data!.docs;
+          var data = snapshot.data!.docs;
 
           return ListView.builder(
-            itemCount: _data.length,
+            itemCount: data.length,
             itemBuilder: (context, index) {
               // change timestamp to string (date exp.)
-              Timestamp exptime = _data[index].data()['date_exp'];
+              Timestamp exptime = data[index].data()['date_exp'];
               DateTime expDate = exptime.toDate();
 
               // change timestamp to string (date remind.)
-              Timestamp remindtime = _data[index].data()['date_remind'];
+              Timestamp remindtime = data[index].data()['date_remind'];
               DateTime remindDate = remindtime.toDate();
 
               return GestureDetector(
@@ -86,8 +86,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           Container(
                             height: 100,
                             color: lilac,
-                            child: Image.network(
-                                '${_data[index].data()['photo']}'),
+                            child:
+                                Image.network('${data[index].data()['photo']}'),
                           ),
                           const SizedBox(
                             width: 10,
@@ -100,7 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  '${_data[index].data()['title']}',
+                                  '${data[index].data()['title']}',
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 26,
@@ -136,7 +136,21 @@ class _HomeScreenState extends State<HomeScreen> {
                                   showDialog(
                                       context: context,
                                       builder: (context) {
-                                        return const EditItemScreen();
+                                        return EditItemScreen(
+                                          idData: data[index].id,
+                                          imageUrlData:
+                                              data[index].data()['photo'],
+                                          titleData:
+                                              data[index].data()['title'],
+                                          expdateData:
+                                              data[index].data()['date_exp'],
+                                          categoryData:
+                                              data[index].data()['category'],
+                                          reminddateData:
+                                              data[index].data()['date_remind'],
+                                          notesData:
+                                              data[index].data()['notes'],
+                                        );
                                       });
                                 },
                                 padding: EdgeInsets.zero,
@@ -155,7 +169,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 onPressed: () {
                                   db
                                       .collection("items")
-                                      .doc(_data[index].id)
+                                      .doc(data[index].id)
                                       .delete()
                                       .then(
                                         (value) => print("deleted"),
@@ -181,12 +195,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
                           // category
                           Text(
-                            '${_data[index].data()['category']}',
+                            '${data[index].data()['category']}',
                             style: const TextStyle(
                               fontSize: 15,
                               color: darkPurple,
-                              // fontWeight: FontWeight.bold,
-                              // fontStyle: FontStyle.italic,
                             ),
                           ),
                         ],
@@ -197,19 +209,21 @@ class _HomeScreenState extends State<HomeScreen> {
                 onTap: () {
                   // dialog bottom sheet
                   showModalBottomSheet(
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(20),
-                        ),
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(20),
                       ),
-                      context: context,
-                      builder: (context) => ItemDetailScreen(
-                          imageUrlData: _data[index].data()['photo'],
-                          titleData: _data[index].data()['title'],
-                          expdateData: expDate,
-                          categoryData: _data[index].data()['category'],
-                          reminddateData: remindDate,
-                          notes: _data[index].data()['notes']));
+                    ),
+                    context: context,
+                    builder: (context) => ItemDetailScreen(
+                      imageUrlData: data[index].data()['photo'],
+                      titleData: data[index].data()['title'],
+                      expdateData: expDate,
+                      categoryData: data[index].data()['category'],
+                      reminddateData: remindDate,
+                      notesData: data[index].data()['notes'],
+                    ),
+                  );
                 },
               );
             },

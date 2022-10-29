@@ -40,3 +40,4 @@ const Color pink = Color.fromARGB(255, 247, 234, 249);
 const Color grey = Color.fromARGB(255, 245, 245, 245);
 const Color darkBlue = Color.fromARGB(255, 66, 0, 255);
 const Color darkGrey = Color.fromARGB(255, 85, 82, 82);
+const Color darkPurple = Colors.deepPurple;

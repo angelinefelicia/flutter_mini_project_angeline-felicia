@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:alta_mini_project/main.dart';
 import 'package:alta_mini_project/widget/appbar_add_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -45,7 +46,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
   // date reminder picker
   DateTime _remindDate = DateTime.now();
 
-  // image
+  // image picker
   String imageUrl = '';
 
   @override
@@ -201,8 +202,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
 
               if (file == null) return;
 
-              String uniqueFileName = _titleController.text +
-                  "_" +
+              String uniqueFileName =
                   DateTime.now().millisecondsSinceEpoch.toString();
 
               Reference referenceRoot = FirebaseStorage.instance.ref();
@@ -238,6 +238,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
       height: 65,
       child: TextFormField(
         validator: (String? value) => value == '' ? "Required" : null,
+        inputFormatters: [LengthLimitingTextInputFormatter(20)],
         controller: _titleController,
         decoration: const InputDecoration(
           labelText: 'Title',

@@ -37,6 +37,9 @@ class _EditItemScreenState extends State<EditItemScreen> {
   // firebase
   var db = FirebaseFirestore.instance;
 
+  //form
+  final formKey = GlobalKey<FormState>();
+
   // title and notes
   final _titleController = TextEditingController();
   final _notesController = TextEditingController();
@@ -80,35 +83,38 @@ class _EditItemScreenState extends State<EditItemScreen> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(20)),
       ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // photo
-          photoPicker(),
-          spaceHeight(),
+      content: Form(
+        key: formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // photo
+            photoPicker(),
+            spaceHeight(),
 
-          // title
-          titleFormItem(),
-          spaceHeight(),
+            // title
+            titleFormItem(),
+            spaceHeight(),
 
-          // date exp
-          dateExpPicker(),
-          spaceHeight(),
+            // date exp
+            dateExpPicker(),
+            spaceHeight(),
 
-          // category
-          categoryDropdown(),
-          spaceHeight(),
+            // category
+            categoryDropdown(),
+            spaceHeight(),
 
-          // date remind
-          dateRemindPicker(),
-          spaceHeight(),
+            // date remind
+            dateRemindPicker(),
+            spaceHeight(),
 
-          // notes
-          notesFormItem(),
+            // notes
+            notesFormItem(),
 
-          // btn save
-          btnSave(),
-        ],
+            // btn save
+            btnSave(),
+          ],
+        ),
       ),
     );
   }
@@ -140,16 +146,18 @@ class _EditItemScreenState extends State<EditItemScreen> {
             categoryValue ??= widget.categoryData;
             _remindDate ??= widget.reminddateData.toDate();
 
-            db.collection("items").doc(widget.idData).update({
-              "photo": imageUrl,
-              "title": _titleController.text,
-              "date_exp": _expDate,
-              "category": categoryValue,
-              "date_remind": _remindDate,
-              "notes": _notesController.text,
-            });
+            if (formKey.currentState!.validate()) {
+              db.collection("items").doc(widget.idData).update({
+                "photo": imageUrl,
+                "title": _titleController.text,
+                "date_exp": _expDate,
+                "category": categoryValue,
+                "date_remind": _remindDate,
+                "notes": _notesController.text,
+              });
 
-            Navigator.pop(context);
+              Navigator.pop(context);
+            }
           },
           child: const Text(
             "SAVE",
@@ -243,11 +251,14 @@ class _EditItemScreenState extends State<EditItemScreen> {
         color: lilac,
         borderRadius: BorderRadius.all(Radius.circular(15)),
       ),
-      height: 65,
+      // height: 65,
       child: TextFormField(
         validator: (String? value) => value == '' ? "Required" : null,
         controller: _titleController,
         inputFormatters: [LengthLimitingTextInputFormatter(20)],
+        keyboardType: TextInputType.multiline,
+        minLines: 1,
+        maxLines: 2,
         decoration: const InputDecoration(
           labelText: 'Title',
           icon: Icon(

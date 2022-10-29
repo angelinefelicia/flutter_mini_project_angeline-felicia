@@ -1,9 +1,15 @@
 import 'package:alta_mini_project/main.dart';
+import 'package:alta_mini_project/screen/home_screen.dart';
 import 'package:flutter/material.dart';
 
-class AppBarContent extends StatelessWidget {
+class AppBarContent extends StatefulWidget {
   const AppBarContent({Key? key}) : super(key: key);
 
+  @override
+  State<AppBarContent> createState() => _AppBarContentState();
+}
+
+class _AppBarContentState extends State<AppBarContent> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -13,7 +19,12 @@ class AppBarContent extends StatelessWidget {
           children: [
             MaterialButton(
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const HomeScreen(),
+                  ),
+                );
               },
               padding: EdgeInsets.zero,
               minWidth: 10,

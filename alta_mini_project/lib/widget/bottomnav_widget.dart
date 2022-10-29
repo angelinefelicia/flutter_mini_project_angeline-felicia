@@ -2,9 +2,28 @@ import 'package:alta_mini_project/main.dart';
 import 'package:alta_mini_project/screen/add_item_screen.dart';
 import 'package:alta_mini_project/screen/home_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class BottomNavContent extends StatelessWidget {
+class BottomNavContent extends StatefulWidget {
   const BottomNavContent({Key? key}) : super(key: key);
+
+  @override
+  State<BottomNavContent> createState() => _BottomNavContentState();
+}
+
+class _BottomNavContentState extends State<BottomNavContent> {
+  // local storage
+  late SharedPreferences storageData;
+
+  @override
+  void initState() {
+    super.initState();
+    initial();
+  }
+
+  void initial() async {
+    storageData = await SharedPreferences.getInstance();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +50,7 @@ class BottomNavContent extends StatelessWidget {
             height: 60,
             child: ElevatedButton(
               onPressed: () {
+                storageData.setString('category', 'All');
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -67,6 +87,7 @@ class BottomNavContent extends StatelessWidget {
           // btn Add
           ElevatedButton(
             onPressed: () {
+              storageData.setString('category', 'All');
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -93,6 +114,7 @@ class BottomNavContent extends StatelessWidget {
             height: 60,
             child: ElevatedButton(
               onPressed: () {
+                storageData.setString('category', 'All');
                 // Navigator.push(
                 //   context,
                 //   MaterialPageRoute(

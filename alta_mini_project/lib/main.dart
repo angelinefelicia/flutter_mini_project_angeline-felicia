@@ -2,13 +2,20 @@ import 'package:alta_mini_project/screen/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 
 void main() async {
+  // firebase
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // local storage
+  SharedPreferences storageData = await SharedPreferences.getInstance();
+  storageData.setString('category', 'All');
+
   runApp(const MyApp());
 }
 
@@ -17,7 +24,25 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // text theme
     final textTheme = Theme.of(context).textTheme;
+
+    // return MultiProvider(
+    //   providers: [
+    //     ChangeNotifierProvider<CategoryViewModel>(
+    //       create: (context) => CategoryViewModel(),
+    //     )
+    //   ],
+    //   child: MaterialApp(
+    //     debugShowCheckedModeBanner: false,
+    //     title: '[ANGEL] Alta Mini Project',
+    //     theme: ThemeData(
+    //       textTheme: GoogleFonts.baloo2TextTheme(textTheme),
+    //       bottomSheetTheme: const BottomSheetThemeData(backgroundColor: navy),
+    //     ),
+    //     home: const HomeScreen(),
+    //   ),
+    // );
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,

@@ -6,6 +6,7 @@ import 'package:alta_mini_project/widget/bottomnav_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -15,7 +16,35 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  // firebase
   var db = FirebaseFirestore.instance;
+
+  // local storage
+  late SharedPreferences storageData;
+  String sp_category = '';
+
+  @override
+  void initState() {
+    super.initState();
+    initial();
+  }
+
+  void initial() async {
+    storageData = await SharedPreferences.getInstance();
+    setState(() {
+      sp_category = storageData.getString('category').toString();
+    });
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> streamDatabase() {
+    if (sp_category == "All") {
+      return db.collection('items').snapshots();
+    }
+    return db
+        .collection('items')
+        .where('category', isEqualTo: sp_category)
+        .snapshots();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,10 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
         // change order + category
-        stream: db
-            .collection('items')
-            .orderBy('date_exp', descending: false)
-            .snapshots(),
+        stream: streamDatabase(),
         builder: (context, snapshot) {
           // loading data..
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -82,6 +108,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       Row(
                         children: [
+                          // check category
+                          // Text(sp_category),
+
                           // image
                           Container(
                             height: 100,

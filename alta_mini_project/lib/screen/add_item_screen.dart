@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:alta_mini_project/main.dart';
+import 'package:alta_mini_project/screen/home_screen.dart';
 import 'package:alta_mini_project/widget/appbar_add_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -134,7 +135,12 @@ class _AddItemScreenState extends State<AddItemScreen> {
               db.collection("items").add(item).then((DocumentReference doc) =>
                   print('DocumentSnapshot added with ID: ${doc.id}'));
 
-              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const HomeScreen(),
+                ),
+              );
             }
           },
           child: const Text(
@@ -235,11 +241,14 @@ class _AddItemScreenState extends State<AddItemScreen> {
         color: lilac,
         borderRadius: BorderRadius.all(Radius.circular(15)),
       ),
-      height: 65,
+      // height: 65,
       child: TextFormField(
         validator: (String? value) => value == '' ? "Required" : null,
         inputFormatters: [LengthLimitingTextInputFormatter(20)],
         controller: _titleController,
+        keyboardType: TextInputType.multiline,
+        minLines: 1,
+        maxLines: 2,
         decoration: const InputDecoration(
           labelText: 'Title',
           icon: Icon(

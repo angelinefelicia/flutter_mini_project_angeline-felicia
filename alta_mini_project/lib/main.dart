@@ -18,6 +18,7 @@ class MyApp extends StatelessWidget {
       title: '[ANGEL] Alta Mini Project',
       theme: ThemeData(
         textTheme: GoogleFonts.baloo2TextTheme(textTheme),
+        bottomSheetTheme: const BottomSheetThemeData(backgroundColor: navy),
       ),
       home: const HomeScreen(),
     );

@@ -36,13 +36,6 @@ class _AddItemScreenState extends State<AddItemScreen> {
 
   // date reminder picker
   DateTime _remindDate = DateTime.now();
-  var defaultDate = DateTime.now();
-
-  @override
-  void initState() {
-    super.initState();
-    defaultDate = DateTime(_expDate.month - 2);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -226,7 +219,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    "Date Expired.",
+                    "Date Expired",
                     style: TextStyle(
                       fontSize: 15,
                       color: darkGrey,
@@ -256,6 +249,8 @@ class _AddItemScreenState extends State<AddItemScreen> {
               setState(() {
                 if (selectDate != null) {
                   _expDate = selectDate;
+                  _remindDate =
+                      DateTime(_expDate.year, _expDate.month - 2, _expDate.day);
                 }
               });
             },
@@ -350,7 +345,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    "Date Remind.",
+                    "Date Reminder",
                     style: TextStyle(
                       fontSize: 15,
                       color: darkGrey,
@@ -374,7 +369,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
             onPressed: () async {
               final selectDate = await showDatePicker(
                   context: context,
-                  initialDate: defaultDate,
+                  initialDate: _remindDate,
                   firstDate: DateTime(currentDate.year - 30),
                   lastDate: DateTime(currentDate.year + 10));
               setState(() {

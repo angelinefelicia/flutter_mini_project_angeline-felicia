@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "461620076824",
+    "project_id": "alta-mini-project",
+    "storage_bucket": "alta-mini-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:461620076824:android:d41b6731a872bc3e053e6d",
+        "android_client_info": {
+          "package_name": "com.example.alta_mini_project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "461620076824-4v2cuuoapri70grr6tq2otcb3qb2esrb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDlcQ1zhg8e_EZURCqPv9EzBbMrsX9WGSE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "461620076824-4v2cuuoapri70grr6tq2otcb3qb2esrb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

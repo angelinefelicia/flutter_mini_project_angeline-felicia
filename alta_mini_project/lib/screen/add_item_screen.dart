@@ -1,7 +1,12 @@
+import 'dart:io';
+
 import 'package:alta_mini_project/main.dart';
 import 'package:alta_mini_project/widget/appbar_add_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class AddItemScreen extends StatefulWidget {
   const AddItemScreen({Key? key}) : super(key: key);
@@ -13,6 +18,9 @@ class AddItemScreen extends StatefulWidget {
 const List<String> cate = <String>['Food', 'Drink', 'Snack', 'Others'];
 
 class _AddItemScreenState extends State<AddItemScreen> {
+  // firebase
+  var db = FirebaseFirestore.instance;
+
   //form
   final formKey = GlobalKey<FormState>();
 
@@ -36,6 +44,9 @@ class _AddItemScreenState extends State<AddItemScreen> {
 
   // date reminder picker
   DateTime _remindDate = DateTime.now();
+
+  // image
+  String imageUrl = '';
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +110,32 @@ class _AddItemScreenState extends State<AddItemScreen> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         TextButton(
-          onPressed: () {},
+          onPressed: () {
+            if (imageUrl.isEmpty) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Photo Required")));
+
+              return;
+            }
+
+            if (formKey.currentState!.validate()) {
+              // make item
+              final item = <String, dynamic>{
+                "photo": imageUrl,
+                "title": _titleController.text,
+                "date_exp": _expDate,
+                "category": categoryValue,
+                "date_remind": _remindDate,
+                "notes": _notesController.text,
+              };
+
+              // add with random unique id
+              db.collection("items").add(item).then((DocumentReference doc) =>
+                  print('DocumentSnapshot added with ID: ${doc.id}'));
+
+              Navigator.pop(context);
+            }
+          },
           child: const Text(
             "SAVE",
             style: TextStyle(
@@ -158,7 +194,28 @@ class _AddItemScreenState extends State<AddItemScreen> {
             ],
           ),
           TextButton(
-            onPressed: () {},
+            onPressed: () async {
+              ImagePicker imagePicker = ImagePicker();
+              XFile? file =
+                  await imagePicker.pickImage(source: ImageSource.camera);
+
+              if (file == null) return;
+
+              String uniqueFileName = _titleController.text +
+                  "_" +
+                  DateTime.now().millisecondsSinceEpoch.toString();
+
+              Reference referenceRoot = FirebaseStorage.instance.ref();
+              Reference referenceDirImages = referenceRoot.child('images');
+
+              Reference referenceImageToUpload =
+                  referenceDirImages.child(uniqueFileName);
+
+              try {
+                await referenceImageToUpload.putFile(File(file.path));
+                imageUrl = await referenceImageToUpload.getDownloadURL();
+              } catch (e) {}
+            },
             child: const Text(
               "Select",
               style: TextStyle(

@@ -11,17 +11,19 @@ class AppBarContent extends StatelessWidget {
       children: <Widget>[
         Row(
           children: [
-            IconButton(
-                padding: const EdgeInsets.all(1),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: const Icon(
-                  Icons.arrow_back_ios_new_rounded,
-                  size: 30,
-                )),
+            MaterialButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              padding: EdgeInsets.zero,
+              minWidth: 10,
+              child: const Icon(
+                Icons.arrow_back_ios_new_rounded,
+                size: 30,
+              ),
+            ),
             const Text(
-              'ADD ITEM',
+              'Add Item',
               style: TextStyle(
                 color: black,
                 fontSize: 32,

@@ -1,4 +1,5 @@
 import 'package:alta_mini_project/main.dart';
+import 'package:alta_mini_project/screen/edit_item_screen.dart';
 import 'package:alta_mini_project/screen/item_detail_screen.dart';
 import 'package:alta_mini_project/widget/appbar_home_widget.dart';
 import 'package:alta_mini_project/widget/bottomnav_widget.dart';
@@ -90,7 +91,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: [
                           // edit
                           MaterialButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return const EditItemScreen();
+                                  });
+                            },
                             padding: EdgeInsets.zero,
                             materialTapTargetSize:
                                 MaterialTapTargetSize.shrinkWrap,

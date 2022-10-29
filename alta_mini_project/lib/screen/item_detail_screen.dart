@@ -98,7 +98,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
           ),
 
           // category
-          Container(
+          SizedBox(
             width: MediaQuery.of(context).size.width,
             // color: white,
             child: Text(
@@ -162,6 +162,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                   height: 1,
                   fontStyle: FontStyle.italic,
                 ),
+                textAlign: TextAlign.justify,
               ),
             ],
           )

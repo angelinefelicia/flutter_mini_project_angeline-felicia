@@ -31,7 +31,11 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-        stream: db.collection('items').snapshots(),
+        // change order + category
+        stream: db
+            .collection('items')
+            .orderBy('date_exp', descending: false)
+            .snapshots(),
         builder: (context, snapshot) {
           // loading data..
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -148,7 +152,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
                               // delete
                               MaterialButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  db
+                                      .collection("items")
+                                      .doc(_data[index].id)
+                                      .delete()
+                                      .then(
+                                        (value) => print("deleted"),
+                                        onError: (e) =>
+                                            print("error delete document: $e"),
+                                      );
+                                },
                                 padding: EdgeInsets.zero,
                                 materialTapTargetSize:
                                     MaterialTapTargetSize.shrinkWrap,

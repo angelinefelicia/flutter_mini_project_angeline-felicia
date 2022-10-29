@@ -455,10 +455,13 @@ class _AddItemScreenState extends State<AddItemScreen> {
         color: lilac,
         borderRadius: BorderRadius.all(Radius.circular(15)),
       ),
-      height: 65,
+      // height: 65,
       child: TextFormField(
         validator: (String? value) => value == '' ? "Required" : null,
         controller: _notesController,
+        keyboardType: TextInputType.multiline,
+        minLines: 1,
+        maxLines: 10,
         decoration: const InputDecoration(
           labelText: 'Notes',
           icon: Icon(

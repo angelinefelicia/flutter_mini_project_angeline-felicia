@@ -1,5 +1,6 @@
 import 'package:alta_mini_project/main.dart';
 import 'package:alta_mini_project/screen/edit_item_screen.dart';
+import 'package:alta_mini_project/screen/empty_screen.dart';
 import 'package:alta_mini_project/screen/item_detail_screen.dart';
 import 'package:alta_mini_project/widget/appbar_home_widget.dart';
 import 'package:alta_mini_project/widget/bottomnav_widget.dart';
@@ -22,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // local storage
   late SharedPreferences storageData;
-  String sp_category = '';
+  String spCategory = '';
 
   @override
   void initState() {
@@ -34,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
     // local storage
     storageData = await SharedPreferences.getInstance();
     setState(() {
-      sp_category = storageData.getString('category').toString();
+      spCategory = storageData.getString('category').toString();
     });
 
     // push notification
@@ -80,13 +81,14 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  // filtering category
   Stream<QuerySnapshot<Map<String, dynamic>>> streamDatabase() {
-    if (sp_category == "All") {
+    if (spCategory == "All") {
       return db.collection('items').snapshots();
     }
     return db
         .collection('items')
-        .where('category', isEqualTo: sp_category)
+        .where('category', isEqualTo: spCategory)
         .snapshots();
   }
 
@@ -123,6 +125,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
           // take data
           var data = snapshot.data!.docs;
+
+          if (data.isEmpty) {
+            return EmptyScreen();
+          }
 
           return ListView.builder(
             itemCount: data.length,

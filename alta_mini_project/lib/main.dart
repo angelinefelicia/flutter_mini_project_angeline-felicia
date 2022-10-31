@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 
 void main() async {
   // firebase
@@ -15,6 +16,21 @@ void main() async {
   // local storage
   SharedPreferences storageData = await SharedPreferences.getInstance();
   storageData.setString('category', 'All');
+
+  // push notification
+  AwesomeNotifications().initialize(
+    'resource://drawable/res_app_icon',
+    [
+      // notif channel buat schedule
+      NotificationChannel(
+        channelKey: 'scheduled_channel',
+        channelName: 'Schedule Notifications',
+        defaultColor: lilac,
+        importance: NotificationImportance.High,
+        soundSource: 'resource://raw/res_custom_notification',
+      )
+    ],
+  );
 
   runApp(const MyApp());
 }

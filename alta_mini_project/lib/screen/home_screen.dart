@@ -1,8 +1,10 @@
 import 'package:alta_mini_project/main.dart';
 import 'package:alta_mini_project/screen/edit_item_screen.dart';
 import 'package:alta_mini_project/screen/item_detail_screen.dart';
+import 'package:alta_mini_project/service/notifications.dart';
 import 'package:alta_mini_project/widget/appbar_home_widget.dart';
 import 'package:alta_mini_project/widget/bottomnav_widget.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
@@ -30,9 +32,52 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void initial() async {
+    // local storage
     storageData = await SharedPreferences.getInstance();
     setState(() {
       sp_category = storageData.getString('category').toString();
+    });
+
+    // push notification
+    AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
+      if (!isAllowed) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text("Allow Notifiications"),
+            content: const Text("Our app would like to send you notifications"),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text(
+                  "Don't Allow",
+                  style: TextStyle(
+                    color: darkGrey,
+                    fontSize: 18,
+                  ),
+                ),
+              ),
+              TextButton(
+                onPressed: () => AwesomeNotifications()
+                    .requestPermissionToSendNotifications()
+                    .then(
+                      (_) => Navigator.pop(context),
+                    ),
+                child: const Text(
+                  "Allow",
+                  style: TextStyle(
+                    color: darkBlue,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      }
     });
   }
 
@@ -132,7 +177,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   '${data[index].data()['title']}',
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 26,
+                                    fontSize: 24,
                                     height: 1,
                                   ),
                                 ),
@@ -195,13 +240,21 @@ class _HomeScreenState extends State<HomeScreen> {
 
                               // delete
                               MaterialButton(
-                                onPressed: () {
+                                onPressed: () async {
+                                  // delete notification
+                                  await AwesomeNotifications()
+                                      .cancelSchedule(
+                                          data[index].data()['notification_id'])
+                                      .then(
+                                          (value) => print("Schedule deleted"));
+
+                                  // delete firebase
                                   db
                                       .collection("items")
                                       .doc(data[index].id)
                                       .delete()
                                       .then(
-                                        (value) => print("deleted"),
+                                        (value) => print("Document deleted"),
                                         onError: (e) =>
                                             print("error delete document: $e"),
                                       );

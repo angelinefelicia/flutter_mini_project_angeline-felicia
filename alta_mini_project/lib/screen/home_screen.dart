@@ -1,7 +1,6 @@
 import 'package:alta_mini_project/main.dart';
 import 'package:alta_mini_project/screen/edit_item_screen.dart';
 import 'package:alta_mini_project/screen/item_detail_screen.dart';
-import 'package:alta_mini_project/service/notifications.dart';
 import 'package:alta_mini_project/widget/appbar_home_widget.dart';
 import 'package:alta_mini_project/widget/bottomnav_widget.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
@@ -222,6 +221,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                               data[index].data()['category'],
                                           reminddateData:
                                               data[index].data()['date_remind'],
+                                          remindtimeData:
+                                              data[index].data()['time_remind'],
+                                          notifIdData: data[index]
+                                              .data()['notification_id'],
                                           notesData:
                                               data[index].data()['notes'],
                                         );
@@ -303,6 +306,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       expdateData: expDate,
                       categoryData: data[index].data()['category'],
                       reminddateData: remindDate,
+                      remindtimeData: data[index].data()['time_remind'],
                       notesData: data[index].data()['notes'],
                     ),
                   );

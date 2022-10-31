@@ -10,6 +10,7 @@ class ItemDetailScreen extends StatefulWidget {
     required this.expdateData,
     required this.categoryData,
     required this.reminddateData,
+    required this.remindtimeData,
     required this.notesData,
   }) : super(key: key);
   String imageUrlData;
@@ -17,6 +18,7 @@ class ItemDetailScreen extends StatefulWidget {
   DateTime expdateData;
   String categoryData;
   DateTime reminddateData;
+  String remindtimeData;
   String notesData;
 
   @override
@@ -131,7 +133,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                     textAlign: TextAlign.left,
                   ),
                   Text(
-                    DateFormat("dd/MM/yyyy").format(widget.reminddateData),
+                    "${DateFormat("dd/MM/yyyy").format(widget.reminddateData)} ${widget.remindtimeData}",
                     style: const TextStyle(
                       color: white,
                       fontSize: 18,

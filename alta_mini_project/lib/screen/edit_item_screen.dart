@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:alta_mini_project/main.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -17,6 +18,8 @@ class EditItemScreen extends StatefulWidget {
     required this.expdateData,
     required this.categoryData,
     required this.reminddateData,
+    required this.remindtimeData,
+    required this.notifIdData,
     required this.notesData,
   }) : super(key: key);
   String idData;
@@ -25,6 +28,8 @@ class EditItemScreen extends StatefulWidget {
   Timestamp expdateData;
   String categoryData;
   Timestamp reminddateData;
+  String remindtimeData;
+  int notifIdData;
   String notesData;
 
   @override
@@ -67,6 +72,7 @@ class _EditItemScreenState extends State<EditItemScreen> {
 
   // date reminder picker
   DateTime? _remindDate;
+  TimeOfDay? _remindTime;
 
   // image picker
   String imageUrl = '';
@@ -141,10 +147,41 @@ class _EditItemScreenState extends State<EditItemScreen> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         TextButton(
-          onPressed: () {
+          onPressed: () async {
+            // delete old notification
+            await AwesomeNotifications()
+                .cancelSchedule(widget.notifIdData)
+                .then((value) => print("Schedule deleted"));
+
             _expDate ??= widget.expdateData.toDate();
             categoryValue ??= widget.categoryData;
             _remindDate ??= widget.reminddateData.toDate();
+            _remindTime ??= TimeOfDay.fromDateTime(
+                DateFormat.jm().parse(widget.remindtimeData));
+
+            // push notification
+            int uniqueId =
+                DateTime.now().millisecondsSinceEpoch.remainder(100000);
+
+            await AwesomeNotifications().createNotification(
+              content: NotificationContent(
+                id: uniqueId,
+                channelKey: 'scheduled_channel',
+                title: _titleController.text,
+                body: _notesController.text,
+                notificationLayout: NotificationLayout.Default,
+              ),
+              schedule: NotificationCalendar(
+                day: _remindDate!.day,
+                month: _remindDate!.month,
+                year: _remindDate!.year,
+                hour: _remindTime!.hour,
+                minute: _remindTime!.minute,
+                second: 0,
+                millisecond: 0,
+              ),
+            );
+            print("notification id: $uniqueId");
 
             if (formKey.currentState!.validate()) {
               db.collection("items").doc(widget.idData).update({
@@ -153,6 +190,8 @@ class _EditItemScreenState extends State<EditItemScreen> {
                 "date_exp": _expDate,
                 "category": categoryValue,
                 "date_remind": _remindDate,
+                "time_remind": _remindTime!.format(context).toString(),
+                "notification_id": uniqueId,
                 "notes": _notesController.text,
               });
 
@@ -410,7 +449,7 @@ class _EditItemScreenState extends State<EditItemScreen> {
         color: lilac,
         borderRadius: BorderRadius.all(Radius.circular(15)),
       ),
-      height: 65,
+      height: 75,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -443,32 +482,101 @@ class _EditItemScreenState extends State<EditItemScreen> {
                       fontSize: 15,
                       color: black,
                       fontStyle: FontStyle.italic,
-                      height: 1,
+                      height: 1.2,
+                    ),
+                  ),
+                  Text(
+                    (_remindTime != null)
+                        ? _remindTime!.format(context)
+                        : widget.remindtimeData,
+                    style: const TextStyle(
+                      fontSize: 15,
+                      color: black,
+                      fontStyle: FontStyle.italic,
+                      height: 1.2,
                     ),
                   ),
                 ],
               ),
             ],
           ),
-          TextButton(
-            onPressed: () async {
-              final selectDate = await showDatePicker(
-                  context: context,
-                  initialDate: widget.reminddateData.toDate(),
-                  firstDate: DateTime(currentDate.year - 30),
-                  lastDate: DateTime(currentDate.year + 10));
-              setState(() {
-                if (selectDate != null) {
-                  _remindDate = selectDate;
-                }
-              });
-            },
-            child: const Text(
-              "Select",
-              style: TextStyle(
-                color: darkBlue,
+          Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              // Pick Date Remind
+              MaterialButton(
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                height: 5,
+                minWidth: 5,
+                onPressed: () async {
+                  final selectDate = await showDatePicker(
+                    context: context,
+                    initialDate: widget.reminddateData.toDate(),
+                    firstDate: DateTime(currentDate.year - 30),
+                    lastDate: DateTime(currentDate.year + 10),
+                    builder: (BuildContext context, Widget? child) {
+                      return Theme(
+                        data: ThemeData(
+                          colorScheme: const ColorScheme.light(
+                            primary: navy,
+                          ),
+                        ),
+                        child: child!,
+                      );
+                    },
+                  );
+                  setState(() {
+                    if (selectDate != null) {
+                      _remindDate = selectDate;
+                    }
+                  });
+                },
+                child: const Icon(
+                  Icons.calendar_today_rounded,
+                  color: darkBlue,
+                  size: 20,
+                ),
               ),
-            ),
+
+              // Pick Time Remind
+              MaterialButton(
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                height: 5,
+                minWidth: 50,
+                onPressed: () async {
+                  final selectTime = await showTimePicker(
+                    context: context,
+                    initialTime: TimeOfDay.fromDateTime(
+                        DateFormat.jm().parse(widget.remindtimeData)),
+                    builder: (BuildContext context, Widget? child) {
+                      return Theme(
+                        data: ThemeData(
+                          colorScheme: const ColorScheme.light(
+                            primary: navy,
+                          ),
+                        ),
+                        child: child!,
+                      );
+                    },
+                  );
+
+                  setState(() {
+                    if (selectTime != null) {
+                      _remindTime = selectTime;
+                    }
+                  });
+                },
+                child: const Icon(
+                  Icons.access_time_rounded,
+                  color: darkBlue,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              )
+            ],
           ),
         ],
       ),

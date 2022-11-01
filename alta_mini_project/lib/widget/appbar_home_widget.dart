@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:alta_mini_project/main.dart';
 import 'package:alta_mini_project/screen/home_screen.dart';
+import 'package:alta_mini_project/view_model/register_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 
 class AppBarContent extends StatefulWidget {
   const AppBarContent({Key? key}) : super(key: key);
@@ -24,45 +28,59 @@ class _AppBarContentState extends State<AppBarContent> {
     storageData = await SharedPreferences.getInstance();
   }
 
+  // user
+  File? imageProfile;
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: Row(
-            children: const [
-              Text(
-                'HOME',
-                style: TextStyle(
-                  color: black,
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
+    return Consumer<RegisterViewModel>(
+      builder: (context, RegisterViewModel data, child) {
+        if (data.getDatas.isNotEmpty) {
+          var registerData = data.getDatas[0];
+          imageProfile = registerData.image;
+        }
+
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: Row(
+                children: [
+                  const Text(
+                    'HOME',
+                    style: TextStyle(
+                      color: black,
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const Spacer(),
+                  CircleAvatar(
+                    backgroundImage: Image.file(imageProfile!).image,
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    tabBarContent("All"),
+                    tabBarContent("Food"),
+                    tabBarContent("Drink"),
+                    tabBarContent("Snack"),
+                    tabBarContent("Others"),
+                  ],
                 ),
               ),
-              Spacer(),
-              CircleAvatar(),
-            ],
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                tabBarContent("All"),
-                tabBarContent("Food"),
-                tabBarContent("Drink"),
-                tabBarContent("Snack"),
-                tabBarContent("Others"),
-              ],
             ),
-          ),
-        ),
-      ],
+          ],
+        );
+      },
     );
   }
 

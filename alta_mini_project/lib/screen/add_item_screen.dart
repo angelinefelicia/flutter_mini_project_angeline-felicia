@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:alta_mini_project/main.dart';
 import 'package:alta_mini_project/screen/home_screen.dart';
+import 'package:alta_mini_project/view_model/register_view_model.dart';
 import 'package:alta_mini_project/widget/appbar_add_widget.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:provider/provider.dart';
 
 class AddItemScreen extends StatefulWidget {
   const AddItemScreen({Key? key}) : super(key: key);
@@ -53,6 +55,12 @@ class _AddItemScreenState extends State<AddItemScreen> {
   // image picker
   String imageUrl = '';
 
+  // user
+  String nameProfile = '';
+  String usernameProfile = '';
+  String passwordProfile = '';
+  String dbCollection = '';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,46 +74,59 @@ class _AddItemScreenState extends State<AddItemScreen> {
           child: const AppBarContent(),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Form(
-          key: formKey,
-          child: Container(
-            margin: const EdgeInsets.only(
-              left: 10,
-              right: 10,
-              bottom: 10,
+      body: Consumer<RegisterViewModel>(
+        builder: (context, RegisterViewModel data, child) {
+          if (data.getDatas.isNotEmpty) {
+            var registerData = data.getDatas[0];
+            nameProfile = registerData.name;
+            usernameProfile = registerData.username;
+            passwordProfile = registerData.password;
+
+            dbCollection = 'items_${usernameProfile}_$passwordProfile';
+          }
+
+          return SingleChildScrollView(
+            child: Form(
+              key: formKey,
+              child: Container(
+                margin: const EdgeInsets.only(
+                  left: 10,
+                  right: 10,
+                  bottom: 10,
+                ),
+                child: Column(
+                  children: [
+                    // btn Save
+                    btnSave(),
+
+                    // photo
+                    photoPicker(),
+                    spaceHeight(),
+
+                    // title
+                    titleFormItem(),
+                    spaceHeight(),
+
+                    // date exp
+                    dateExpPicker(),
+                    spaceHeight(),
+
+                    // category
+                    categoryDropdown(),
+                    spaceHeight(),
+
+                    // date remind
+                    dateRemindPicker(),
+                    spaceHeight(),
+
+                    // notes
+                    notesFormItem(),
+                  ],
+                ),
+              ),
             ),
-            child: Column(
-              children: [
-                // btn Save
-                btnSave(),
-
-                // photo
-                photoPicker(),
-                spaceHeight(),
-
-                // title
-                titleFormItem(),
-                spaceHeight(),
-
-                // date exp
-                dateExpPicker(),
-                spaceHeight(),
-
-                // category
-                categoryDropdown(),
-                spaceHeight(),
-
-                // date remind
-                dateRemindPicker(),
-                spaceHeight(),
-
-                // notes
-                notesFormItem(),
-              ],
-            ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }
@@ -161,8 +182,9 @@ class _AddItemScreenState extends State<AddItemScreen> {
               };
 
               // add to firebase with random unique id
-              db.collection("items").add(item).then((DocumentReference doc) =>
-                  print('DocumentSnapshot added with ID: ${doc.id}'));
+              db.collection(dbCollection).add(item).then(
+                  (DocumentReference doc) =>
+                      print('DocumentSnapshot added with ID: ${doc.id}'));
 
               Navigator.push(
                 context,

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:alta_mini_project/main.dart';
+import 'package:alta_mini_project/view_model/register_view_model.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,6 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
 class EditItemScreen extends StatefulWidget {
   EditItemScreen({
@@ -77,51 +79,70 @@ class _EditItemScreenState extends State<EditItemScreen> {
   // image picker
   String imageUrl = '';
 
+  // user
+  String nameProfile = '';
+  String usernameProfile = '';
+  String passwordProfile = '';
+  String dbCollection = '';
+
   @override
   Widget build(BuildContext context) {
     // set old image
     imageUrl = widget.imageUrlData;
 
-    return AlertDialog(
-      scrollable: true,
-      title: titleModal(),
-      backgroundColor: navy,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(20)),
-      ),
-      content: Form(
-        key: formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // photo
-            photoPicker(),
-            spaceHeight(),
+    return Consumer<RegisterViewModel>(
+      builder: (context, RegisterViewModel data, child) {
+        if (data.getDatas.isNotEmpty) {
+          var registerData = data.getDatas[0];
+          nameProfile = registerData.name;
+          usernameProfile = registerData.username;
+          passwordProfile = registerData.password;
 
-            // title
-            titleFormItem(),
-            spaceHeight(),
+          dbCollection = 'items_${usernameProfile}_$passwordProfile';
+        }
 
-            // date exp
-            dateExpPicker(),
-            spaceHeight(),
+        return AlertDialog(
+          scrollable: true,
+          title: titleModal(),
+          backgroundColor: navy,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+          ),
+          content: Form(
+            key: formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // photo
+                photoPicker(),
+                spaceHeight(),
 
-            // category
-            categoryDropdown(),
-            spaceHeight(),
+                // title
+                titleFormItem(),
+                spaceHeight(),
 
-            // date remind
-            dateRemindPicker(),
-            spaceHeight(),
+                // date exp
+                dateExpPicker(),
+                spaceHeight(),
 
-            // notes
-            notesFormItem(),
+                // category
+                categoryDropdown(),
+                spaceHeight(),
 
-            // btn save
-            btnSave(),
-          ],
-        ),
-      ),
+                // date remind
+                dateRemindPicker(),
+                spaceHeight(),
+
+                // notes
+                notesFormItem(),
+
+                // btn save
+                btnSave(),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -184,7 +205,7 @@ class _EditItemScreenState extends State<EditItemScreen> {
             print("notification id: $uniqueId");
 
             if (formKey.currentState!.validate()) {
-              db.collection("items").doc(widget.idData).update({
+              db.collection(dbCollection).doc(widget.idData).update({
                 "photo": imageUrl,
                 "title": _titleController.text,
                 "date_exp": _expDate,

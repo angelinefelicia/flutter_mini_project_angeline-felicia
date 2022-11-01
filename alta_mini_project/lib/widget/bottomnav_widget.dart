@@ -1,6 +1,7 @@
 import 'package:alta_mini_project/main.dart';
 import 'package:alta_mini_project/screen/add_item_screen.dart';
 import 'package:alta_mini_project/screen/home_screen.dart';
+import 'package:alta_mini_project/screen/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -115,12 +116,12 @@ class _BottomNavContentState extends State<BottomNavContent> {
             child: ElevatedButton(
               onPressed: () {
                 storageData.setString('category', 'All');
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //     builder: (context) => const HomeScreen(),
-                //   ),
-                // );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ProfileScreen(),
+                  ),
+                );
               },
               style: ElevatedButton.styleFrom(
                 primary: pink,

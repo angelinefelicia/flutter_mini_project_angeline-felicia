@@ -103,6 +103,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               spaceHeight(),
 
               imagePicker(),
+              spaceHeight(),
 
               // btn save
               btnSave(),

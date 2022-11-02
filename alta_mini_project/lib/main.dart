@@ -1,5 +1,3 @@
-import 'package:alta_mini_project/screen/home_screen.dart';
-import 'package:alta_mini_project/screen/register_screen.dart';
 import 'package:alta_mini_project/screen/welcome_screen.dart';
 import 'package:alta_mini_project/view_model/register_view_model.dart';
 import 'package:flutter/material.dart';
@@ -63,16 +61,6 @@ class MyApp extends StatelessWidget {
         home: const WelcomeScreen(),
       ),
     );
-
-    // return MaterialApp(
-    //   debugShowCheckedModeBanner: false,
-    //   title: '[ANGEL] Alta Mini Project',
-    //   theme: ThemeData(
-    //     textTheme: GoogleFonts.baloo2TextTheme(textTheme),
-    //     bottomSheetTheme: const BottomSheetThemeData(backgroundColor: navy),
-    //   ),
-    //   home: const WelcomeScreen(),
-    // );
   }
 }
 

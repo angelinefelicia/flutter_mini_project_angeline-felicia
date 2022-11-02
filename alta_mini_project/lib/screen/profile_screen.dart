@@ -34,6 +34,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     storageData = await SharedPreferences.getInstance();
   }
 
+  // animation
+  bool isBig = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,60 +61,107 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
           return Column(
             children: [
-              Container(
-                margin: const EdgeInsets.only(
-                  top: 10,
-                  left: 20,
-                  right: 20,
-                  bottom: 10,
-                ),
-                padding: const EdgeInsets.all(20),
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(15)),
-                  color: lilac,
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Container(
-                        height: 130,
-                        width: 130,
-                        color: white,
-                        child: imageProfile != null
-                            ? SizedBox(
-                                child: Image.file(
-                                  imageProfile!,
-                                  fit: BoxFit.cover,
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    isBig = !isBig;
+                  });
+                },
+                child: AnimatedContainer(
+                  margin: const EdgeInsets.only(
+                    top: 10,
+                    left: 20,
+                    right: 20,
+                    bottom: 10,
+                  ),
+                  padding: const EdgeInsets.all(20),
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(15)),
+                    color: lilac,
+                  ),
+                  duration: const Duration(milliseconds: 300),
+                  height: isBig ? 280 : 170,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                isBig = !isBig;
+                              });
+                            },
+                            child: AnimatedContainer(
+                                height: isBig ? 170 : 130,
+                                width: isBig ? 330 : 130,
+                                color: white,
+                                duration: const Duration(milliseconds: 300),
+                                child: imageProfile != null
+                                    ? SizedBox(
+                                        child: Image.file(
+                                          imageProfile!,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      )
+                                    : Container(color: white)),
+                          ),
+                          isBig ? Container() : const SizedBox(width: 10),
+                          isBig
+                              ? Container()
+                              : Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      nameProfile,
+                                      style: const TextStyle(
+                                        fontSize: 26,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(
+                                      usernameProfile,
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        height: 1,
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 60,
+                                    ),
+                                  ],
+                                )
+                        ],
+                      ),
+                      isBig ? const SizedBox(height: 10) : Container(),
+                      isBig
+                          ? Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  nameProfile,
+                                  style: const TextStyle(
+                                    fontSize: 26,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              )
-                            : Container(color: white)),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          nameProfile,
-                          style: const TextStyle(
-                            fontSize: 26,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          usernameProfile,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            height: 1,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 60,
-                        ),
-                      ],
-                    ),
-                  ],
+                                Text(
+                                  usernameProfile,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    height: 1,
+                                  ),
+                                ),
+                              ],
+                            )
+                          : Container()
+                    ],
+                  ),
                 ),
               ),
               TextButton(

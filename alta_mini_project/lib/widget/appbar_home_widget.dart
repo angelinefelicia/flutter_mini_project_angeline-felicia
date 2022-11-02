@@ -56,9 +56,12 @@ class _AppBarContentState extends State<AppBarContent> {
                     ),
                   ),
                   const Spacer(),
-                  CircleAvatar(
-                    backgroundImage: Image.file(imageProfile!).image,
-                  ),
+                  Container(
+                      child: (imageProfile == null)
+                          ? const CircleAvatar(backgroundColor: navy)
+                          : CircleAvatar(
+                              backgroundImage:
+                                  Image.file(imageProfile!).image)),
                 ],
               ),
             ),

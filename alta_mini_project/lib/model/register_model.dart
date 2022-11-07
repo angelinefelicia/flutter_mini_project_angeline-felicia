@@ -1,5 +1,3 @@
-import 'dart:io';
-
 class RegisterModel {
   String name = '';
   String username = '';

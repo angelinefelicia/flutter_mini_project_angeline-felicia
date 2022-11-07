@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:alta_mini_project/main.dart';
 import 'package:alta_mini_project/screen/home_screen.dart';
 import 'package:alta_mini_project/view_model/register_view_model.dart';

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:alta_mini_project/model/register_model.dart';
 import 'package:flutter/material.dart';
 

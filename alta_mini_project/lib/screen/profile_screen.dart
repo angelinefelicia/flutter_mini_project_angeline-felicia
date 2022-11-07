@@ -20,7 +20,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   // user
   String nameProfile = '';
   String usernameProfile = '';
-  File? imageProfile;
+  String? imageProfile;
 
   late SharedPreferences storageData;
 
@@ -102,7 +102,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 duration: const Duration(milliseconds: 300),
                                 child: imageProfile != null
                                     ? SizedBox(
-                                        child: Image.file(
+                                        child: Image.network(
                                           imageProfile!,
                                           fit: BoxFit.cover,
                                         ),

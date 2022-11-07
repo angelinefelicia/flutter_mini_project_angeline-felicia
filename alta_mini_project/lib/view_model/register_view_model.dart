@@ -8,7 +8,7 @@ class RegisterViewModel with ChangeNotifier {
 
   List<RegisterModel> get getDatas => _datas;
 
-  void add(String name, String username, String password, File? image) {
+  void add(String name, String username, String password, String image) {
     RegisterModel data = RegisterModel(
         name: name, username: username, password: password, image: image);
     _datas.add(data);

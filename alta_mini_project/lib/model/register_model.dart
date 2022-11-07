@@ -4,7 +4,7 @@ class RegisterModel {
   String name = '';
   String username = '';
   String password = '';
-  File? image;
+  String? image;
 
   RegisterModel({
     required this.name,

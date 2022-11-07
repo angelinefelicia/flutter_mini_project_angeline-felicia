@@ -34,7 +34,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         storageData.getString('name').toString(),
         storageData.getString('username').toString(),
         storageData.getString('password').toString(),
-        null,
+        storageData.getString('image').toString(),
       );
 
       Navigator.pushAndRemoveUntil(

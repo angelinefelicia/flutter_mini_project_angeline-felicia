@@ -29,7 +29,7 @@ class _AppBarContentState extends State<AppBarContent> {
   }
 
   // user
-  File? imageProfile;
+  String? imageProfile;
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +61,7 @@ class _AppBarContentState extends State<AppBarContent> {
                           ? const CircleAvatar(backgroundColor: navy)
                           : CircleAvatar(
                               backgroundImage:
-                                  Image.file(imageProfile!).image)),
+                                  Image.network(imageProfile!).image)),
                 ],
               ),
             ),

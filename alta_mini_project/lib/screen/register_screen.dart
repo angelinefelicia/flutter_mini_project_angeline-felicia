@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);
@@ -57,13 +58,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   // image picker variable
-  File? image;
+  String image = '';
 
   Future getImage() async {
-    final ImagePicker picker = ImagePicker();
-    final XFile? imagePicked =
-        await picker.pickImage(source: ImageSource.gallery);
-    image = File(imagePicked!.path);
+    ImagePicker imagePicker = ImagePicker();
+    XFile? file = await imagePicker.pickImage(source: ImageSource.gallery);
+
+    if (file == null) return;
+
+    String uniqueFileName = DateTime.now().millisecondsSinceEpoch.toString();
+
+    Reference referenceRoot = FirebaseStorage.instance.ref();
+    Reference referenceDirImages = referenceRoot.child('users');
+
+    Reference referenceImageToUpload = referenceDirImages.child(uniqueFileName);
+
+    try {
+      await referenceImageToUpload.putFile(File(file.path));
+      image = await referenceImageToUpload.getDownloadURL();
+    } catch (e) {}
   }
 
   @override
@@ -157,6 +170,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               storageData.setString('name', _nameController.text);
               storageData.setString('username', _usernameController.text);
               storageData.setString('password', _passwordController.text);
+              storageData.setString('image', image);
 
               // provider
               final provider =
@@ -165,7 +179,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 storageData.getString('name').toString(),
                 storageData.getString('username').toString(),
                 storageData.getString('password').toString(),
-                image,
+                storageData.getString('image').toString(),
               );
 
               Navigator.pushAndRemoveUntil(

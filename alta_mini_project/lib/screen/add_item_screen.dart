@@ -362,7 +362,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
               final selectDate = await showDatePicker(
                 context: context,
                 initialDate: currentDate,
-                firstDate: DateTime(currentDate.year - 30),
+                firstDate: currentDate,
                 lastDate: DateTime(currentDate.year + 10),
                 builder: (BuildContext context, Widget? child) {
                   return Theme(
@@ -516,7 +516,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
                   final selectDate = await showDatePicker(
                     context: context,
                     initialDate: _remindDate,
-                    firstDate: DateTime(currentDate.year - 30),
+                    firstDate: DateTime(currentDate.month - 2),
                     lastDate: DateTime(currentDate.year + 10),
                     builder: (BuildContext context, Widget? child) {
                       return Theme(

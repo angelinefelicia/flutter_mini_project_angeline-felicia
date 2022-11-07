@@ -184,9 +184,12 @@ class _HomeScreenState extends State<HomeScreen> {
                               // image
                               Container(
                                 height: 100,
+                                width: 90,
                                 color: lilac,
                                 child: Image.network(
-                                    '${data[index].data()['photo']}'),
+                                  '${data[index].data()['photo']}',
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                               const SizedBox(
                                 width: 10,

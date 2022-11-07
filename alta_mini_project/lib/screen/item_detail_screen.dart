@@ -40,10 +40,29 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
               Row(
                 children: [
                   // image
-                  Container(
-                    height: 135,
-                    color: navy,
-                    child: Image.network(widget.imageUrlData),
+                  GestureDetector(
+                    onTap: () {
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              contentPadding: EdgeInsets.zero,
+                              content: Image.network(
+                                widget.imageUrlData,
+                                fit: BoxFit.cover,
+                              ),
+                            );
+                          });
+                    },
+                    child: Container(
+                      height: 135,
+                      width: 100,
+                      color: navy,
+                      child: Image.network(
+                        widget.imageUrlData,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
                   const SizedBox(
                     width: 15,

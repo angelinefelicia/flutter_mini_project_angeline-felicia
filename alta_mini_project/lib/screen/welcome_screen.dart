@@ -1,8 +1,10 @@
 import 'package:alta_mini_project/main.dart';
 import 'package:alta_mini_project/screen/home_screen.dart';
 import 'package:alta_mini_project/screen/register_screen.dart';
+import 'package:alta_mini_project/view_model/register_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({Key? key}) : super(key: key);
@@ -26,6 +28,15 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     newUser = storageData.getBool('isRegister') ?? true;
 
     if (newUser == false) {
+      // provider
+      final provider = Provider.of<RegisterViewModel>(context, listen: false);
+      provider.add(
+        storageData.getString('name').toString(),
+        storageData.getString('username').toString(),
+        storageData.getString('password').toString(),
+        null,
+      );
+
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(

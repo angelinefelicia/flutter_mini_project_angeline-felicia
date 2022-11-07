@@ -534,7 +534,7 @@ class _EditItemScreenState extends State<EditItemScreen> {
                   final selectDate = await showDatePicker(
                     context: context,
                     initialDate: widget.reminddateData.toDate(),
-                    firstDate: currentDate,
+                    firstDate: DateTime(currentDate.month - 2),
                     lastDate: DateTime(currentDate.year + 10),
                     builder: (BuildContext context, Widget? child) {
                       return Theme(

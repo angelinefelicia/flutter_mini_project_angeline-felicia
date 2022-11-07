@@ -32,21 +32,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   void initState() {
     super.initState();
-    checkRegister();
+    initial();
   }
 
-  void checkRegister() async {
+  void initial() async {
     storageData = await SharedPreferences.getInstance();
-    newUser = storageData.getBool('isRegister') ?? true;
-
-    if (newUser == false) {
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const HomeScreen(),
-          ),
-          (route) => false);
-    }
   }
 
   @override

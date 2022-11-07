@@ -80,87 +80,56 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     color: lilac,
                   ),
                   duration: const Duration(milliseconds: 300),
-                  height: isBig ? 280 : 170,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                isBig = !isBig;
-                              });
-                            },
-                            child: AnimatedContainer(
-                                height: isBig ? 170 : 130,
-                                width: isBig ? 330 : 130,
-                                color: white,
-                                duration: const Duration(milliseconds: 300),
-                                child: imageProfile != null
-                                    ? SizedBox(
-                                        child: Image.network(
-                                          imageProfile!,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      )
-                                    : Container(color: white)),
+                  height: isBig ? 270 : 170,
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    child: Wrap(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              isBig = !isBig;
+                            });
+                          },
+                          child: AnimatedContainer(
+                            height: isBig ? 170 : 130,
+                            width: isBig ? 330 : 130,
+                            color: white,
+                            duration: const Duration(milliseconds: 300),
+                            child: imageProfile != null
+                                ? SizedBox(
+                                    child: Image.network(
+                                      imageProfile!,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  )
+                                : Container(color: white),
                           ),
-                          isBig ? Container() : const SizedBox(width: 10),
-                          isBig
-                              ? Container()
-                              : Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      nameProfile,
-                                      style: const TextStyle(
-                                        fontSize: 26,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Text(
-                                      usernameProfile,
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        height: 1,
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 60,
-                                    ),
-                                  ],
-                                )
-                        ],
-                      ),
-                      isBig ? const SizedBox(height: 10) : Container(),
-                      isBig
-                          ? Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  nameProfile,
-                                  style: const TextStyle(
-                                    fontSize: 26,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Text(
-                                  usernameProfile,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    height: 1,
-                                  ),
-                                ),
-                              ],
-                            )
-                          : Container()
-                    ],
+                        ),
+                        isBig ? Container() : const SizedBox(width: 10),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              nameProfile,
+                              overflow: TextOverflow.fade,
+                              style: const TextStyle(
+                                fontSize: 26,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              usernameProfile,
+                              overflow: TextOverflow.fade,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                height: 1,
+                              ),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),

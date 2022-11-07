@@ -10,7 +10,7 @@ void main() {
     });
 
     test('add new user', () {
-      user.add("Angeline", "angeline", "angeline", null);
+      user.add("Angeline", "angeline", "angeline", "null");
       expect(user.getDatas, isNotEmpty);
     });
 
